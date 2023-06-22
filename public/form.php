@@ -31,11 +31,11 @@ if ($readyToSend) {
     $headers = "Content-Type: text/plain; charset=utf-8\r\n";
     $headers .= "From: " . $env["EMAIL_SENDER"] . "\r\n";
     
+    // send email and check status
     if (mail($env["EMAIL_RECIPIENT"], $subject, $message, $headers)){
         $success = "Le mail a bien été envoyé à " . $env["EMAIL_RECIPIENT"];
         header("Location: /?success=" . urlencode($success));
     } else {
-        echo "erreur";
         $error = "Une erreur est survenue lors de l'envoi du mail.";
         header("Location: /?error=" . urlencode($error));
     }
