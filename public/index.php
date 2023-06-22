@@ -1,47 +1,3 @@
-<?php
-
-if ($_POST) {
-  $data = [
-    "company" => $_POST["company"],
-    "lastname" => $_POST["lastname"],
-    "firstname" => $_POST["firstname"],
-    "occupation" => $_POST["occupation"],
-    "phone" => $_POST["phone"],
-    "email" => $_POST["email"],
-    "reason" => $_POST["reason"],
-    "description" => $_POST["description"],
-  ];
-  
-  // verify that all needed data is set and not empty
-  $readyToSend = true;
-  foreach ($data as $key => $value) {
-    // occupation field is nullable
-    if ($key != "occupation" && (!isset($value) || empty($value))) {
-      $readyToSend = false;
-    }
-  }
-  
-  if ($readyToSend) {
-    // retrieve sensible data
-    $env = parse_ini_file('../.env');
-  
-    $subject = "Test technique pour Akabia";
-    $message = "Ceci est un message de test";
-  
-    $headers = "Content-Type: text/plain; charset=utf-8\r\n";
-    $headers .= "From: " . $env["EMAIL_SENDER"] . "\r\n";
-  
-    if (mail($env["EMAIL_RECIPIENT"], $subject, $message, $headers)){
-      $emailSuccess = "Le mail a bien été envoyé à " . $env["EMAIL_RECIPIENT"];
-    } else {
-      echo 'erreur';
-      $emailError = "Une erreur est survenue lors de l'envoi du mail.";
-    }
-  }
-}
-
-?>
-
 <!DOCTYPE html>
 <html lang="fr">
   <head>
@@ -68,7 +24,7 @@ if ($_POST) {
         <span>Un besoin, une demande ?</span>
       </div>
 
-      <form method="POST" id="form">
+      <form method="POST" id="form" action="./form.php">
         <input
           type="text"
           name="company"
@@ -148,9 +104,16 @@ if ($_POST) {
           </div>
         </div>
 
-        <div id="error-msg" class="<?php isset($emailSuccess) && $emailSuccess ? "success" : "error" ?>">
-          <?php isset($emailSuccess) && $emailSuccess ? $emailSuccess : "" ?>
-          <?php isset($emailError) && $emailError ? $emailError : "" ?>
+        <div id="error-msg" class="
+          <?=
+            isset($_GET['success']) ? 'success' : '';
+            isset($_GET['error']) ? 'error' : '';
+          ?>"
+        >
+          <?=
+            urldecode($_GET['success'] ?? '');
+            urldecode($_GET['error'] ?? '');
+          ?>
         </div>
 
         <div>
